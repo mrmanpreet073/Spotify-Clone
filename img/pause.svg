@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">
+  <!-- White circle background -->
+  <circle cx="12" cy="12" r="11" fill="#ffffff"/>
+  
+  <!-- Black pause bars -->
+  <rect x="9" y="8" width="2.5" height="8" fill="#000000" rx="1"/>
+  <rect x="12.5" y="8" width="2.5" height="8" fill="#000000" rx="1"/>
+</svg>
