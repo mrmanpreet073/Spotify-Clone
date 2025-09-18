@@ -709,12 +709,12 @@ main .circle {
     }
 
  
-    .card {
+        .card {
         position: relative;
         background-color: #2d2d2d;
         border-radius: 5px;
-        padding: 11px 9px;
-        width: 127px;
+        padding: 11px 11px;
+        width: 111px;
         margin: 5px 10px;
         font-weight: 100;
     }
