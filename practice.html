@@ -4,141 +4,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Document</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            border: 2px solid black;
-            display: flex;
-            height: 100vh;
-        }
-
-        .left {
-            width: 35vw;
-            border: 2px solid rgb(255, 157, 157);
-
-        }
-
-        .right {
-            width: 65vw;
-            border: 2px solid rgb(255, 157, 157);
-            /* display: flex;
- align-items: center; */
-        }
-
-        .right img {
-
-            cursor: pointer;
-        }
-
-        .songs ul {
-            display: flex;
-            flex-direction: column;
-            margin: 20px 10px 10px 10px;
-        }
-
-        .songs ul li {
-            display: flex;
-            align-items: center;
-            border: 2px solid black;
-            /* margin: 2px; */
-            list-style: none;
-            padding: 5px;
-            justify-content: space-between;
-
-
-        }
-
-        .songs ul li img {
-            height: 40px;
-        }
-    </style>
+    <title>Music </title>
 </head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+
+    }
+
+    body {
+        color: white;
+        background-color: #201f1f;
+    }
+
+    .music-container {
+        text-align: center;
+        /* border: 2px solid black; */
+        height: 70vh;
+    }
+
+    .card {
+        /* display: flex; */
+        margin: auto;
+        align-items: center;
+        justify-content: center;
+        justify-content: center;
+        /* border: 2px solid green; */
+        background-color: #323232;
+        width: 90vw;
+        max-height: 300px;
+        overflow-y: scroll;
+    }
+
+    ul li img {
+        padding: 5px;
+        height: 40px;
+    }
+
+    ul li {
+        /* border: 2px solid red; */
+        background-color: #7c3f3f;
+        margin: 15px;
+        gap: 10px;
+        border-radius: 5px;
+        display: flex;
+        white-space: nowrap;
+        align-items: center;
+
+    }
+
+    .play-area {
+        position: absolute;
+        border: 2px solid red;
+        bottom: 0;
+        width: 100vw;
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+    }
+</style>
 
 <body>
-    <div class="container">
-        <div class="left">
-            <h1>Library</h1>
-            <div class="songs">
-                <ul class="ul">
-                    
-                </ul>
-            </div>
+    <div class="music-container">
+        <h1>All Music</h1>
+        <div class="card">
+            <ul class="ull">
+
+            </ul>
         </div>
-        <div class="right">
-            <h1>play Song here</h1>
-            <img class=play src="img/play.svg" alt="">
+    </div>
+
+    <div class="play-area">
+        <div class="buttons">
+            <img src="img/previous.svg" alt="">
+            <img class="invert" src="img/play.svg" alt="">
+            <img src="img/next.svg" alt="">
         </div>
     </div>
     <script>
-        console.log('js start');
-let currentsong = new Audio();
+        let audio=new Audio();
 
-//play Music 
+        let playmusic=(track)=>{
 
-let playmusic =(track)=>{
-currentsong.src="music/"+track;
-currentsong.play();
-}
-        async function getsongs() {
+        } ;
+               console.log('Starting JS');
 
-            let a = await fetch("http://127.0.0.1:5500/Spotify/music/");
-
-            let response = await a.text();
-
+        async function fetchdata() {
+            let response = await fetch('music/sidhu');
+            let result = await response.text();
             let div = document.createElement('div');
-            div.innerHTML = response;
+            div.innerHTML = result;
+            let as = div.getElementsByTagName('a')
+            let songs = [];
 
-            let as =  div.getElementsByTagName("a");
-            // console.log(as);
-
-            let songs=[];
-
-for (let index = 0; index < as.length; index++) {
-    const e = as[index];
-
-    if(e.href.endsWith('.mp3')){
+            for (let index = 0; index < as.length; index++) {
+                const e = as[index];
+                if (e.href.endsWith('.mp3')) {
+                    songs.push(e.href.split('sidhu/')[1].replaceAll('%20', ' '));
 
 
-      songs.push(e.href.split("/music/")[1]);
-             
-    }
-}
+                }
 
-return songs;
+            }
+
+            for (const song of songs) {
+                let songul = document.querySelector('.ull');
+                songul.innerHTML = songul.innerHTML + `
+                  <li>
+                    <div><img class="invert" src="img/play.svg" alt=""></div>
+                    <div class="sname">${song}</div>
+                    <div></div>
+                </li>`;
 
 
-}
+            }
 
-async function main(){
-    let songs= await getsongs();
-    //displaying on library 
-    let songul=  document.querySelector('.ul'); 
-    for (const song of songs) {
-    
-        songul.innerHTML=  songul.innerHTML + `
-        <li> <div>${song.replaceAll("%20"," ")}</div> <img src="img/play.svg" alt=""></li>
-        
-        `;
-    }
+            Array.from(document.getElementsByTagName('li')).forEach((e) => {
 
-    //play music 
-     Array.from(document.querySelector('.ul').querySelectorAll('li')).forEach(e => {
-        e.addEventListener('click',()=>{
-            playmusic(e.firstElementChild.innerText);
-        })
-         console.log(e.firstElementChild.innerText);
-        
-     });
-     
-}
-main();
-        // getsongs();
+                e.addEventListener('click', () => {
+                    console.log(e.querySelector('.sname').innerHTML);
+
+                })
+
+
+            });
+
+        }
+
+        fetchdata();
+
 
     </script>
 </body>
