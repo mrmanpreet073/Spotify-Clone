@@ -54,30 +54,42 @@
 
     }
 
+    .play-area2 {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+    }
+
     .play-area {
-        border: 2px solid red;
+        position: absolute;
+        background-color:  rgb(0, 0, 0);
         bottom: 0;
         width: 100vw;
+
     }
-    .seekbar{
+
+    .seekbar {
         margin: 10px;
     }
-    .line{
+
+    .line {
         position: relative;
         border: 1px solid white;
-        width: 40vw;
+        width: 60vw;
         height: 5px;
         margin: auto;
         border-radius: 10px;
 
     }
-.circle{
-    position: absolute;
-    border: 3px solid white;
-    width: 5px;
-    border-radius: 20px;
-    
-}
+
+    .circle {
+        position: absolute;
+        border: 3px solid white;
+        width: 5px;
+        border-radius: 20px;
+
+    }
+
     .buttons {
         display: flex;
         justify-content: center;
@@ -97,27 +109,49 @@
     </div>
 
     <div class="play-area">
-        <div class="buttons">
-            <img src="img/previous.svg" alt="">
-            <img class="invert" src="img/play.svg" alt="">
-            <img src="img/next.svg" alt="">
+        <div class="play-area2">
+            <div class="song-name"></div>
+            <div class="buttons">
+                <img src="img/previous.svg" alt="">
+                <img class="play" src="img/play.svg" alt="">
+                <img src="img/next.svg" alt="">
+            </div>
+            <div class="duration">00:00 / 00:00</div>
         </div>
         <div class="seekbar">
-            <div class="line"><div class="circle"></div></div>
-            
+            <div class="line">
+                <div class="circle"></div>
+            </div>
+
         </div>
     </div>
     <script>
-        let audio=new Audio();
+        let audio = new Audio();
+        let play = document.querySelector('.play');
+        let playarea = document.querySelector('.play-area2')
+// All Functions  
 
-        let playmusic=(track)=>{
+//Play Music
+        let playmusic = (track) => {
 
-            audio.src=track;
-            audio.play();
+            audio.src = track;
+            if (audio.paused) {
+                audio.play();
+                play.src = 'img/pause.svg'
+
+            }
 
 
-        } ;
-               console.log('Starting JS');
+        };
+//Formate Time
+function formatTime(seconds) {
+  if (isNaN(seconds)) return "0:00"; // handle NaN or invalid input
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+}
+
+        console.log('Starting JS');
 
         async function fetchdata() {
             let response = await fetch('music/sidhu');
@@ -136,7 +170,7 @@
                 }
 
             }
-
+            // adding songs  
             for (const song of songs) {
                 let songul = document.querySelector('.ull');
                 songul.innerHTML = songul.innerHTML + `
@@ -148,16 +182,45 @@
 
 
             }
-
+            // Add event listner to all songs  
             Array.from(document.getElementsByTagName('li')).forEach((e) => {
 
                 e.addEventListener('click', () => {
-                   playmusic("music/sidhu/"+e.querySelector('.sname').innerHTML);
+
+                    playmusic("music/sidhu/" + e.querySelector('.sname').innerHTML);
+
+let value=e.querySelector('.sname').innerHTML;
+let songname=document.querySelector('.song-name');
+songname.innerHTML=value;
+
 
                 })
 
 
             });
+            // Working onn play Button 
+            play.addEventListener('click', () => {
+                if (audio.paused) {
+                    audio.play();
+                    play.src = 'img/pause.svg';
+                }
+                else {
+                    audio.pause();
+                    play.src = 'img/play.svg'
+                }
+            });
+
+            // Working on song duration 
+
+            audio.addEventListener('timeupdate',()=> {
+
+                // console.log(formatTime(audio.duration))
+                // console.log(formatTime(audio.currentTime))
+                document.querySelector('.duration').innerHTML=`${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+              
+            });
+
+            
 
         }
 
