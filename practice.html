@@ -62,7 +62,7 @@
 
     .play-area {
         position: absolute;
-        background-color:  rgb(0, 0, 0);
+        background-color: rgb(0, 0, 0);
         bottom: 0;
         width: 100vw;
 
@@ -87,6 +87,7 @@
         border: 3px solid white;
         width: 5px;
         border-radius: 20px;
+        left: 0;
 
     }
 
@@ -128,28 +129,29 @@
     <script>
         let audio = new Audio();
         let play = document.querySelector('.play');
+        let songs = [];
         let playarea = document.querySelector('.play-area2')
-// All Functions  
+        // All Functions  
 
-//Play Music
+        //Play Music
         let playmusic = (track) => {
 
-            audio.src = track;
+            audio.src = "music/sidhu/"+track;
             if (audio.paused) {
                 audio.play();
                 play.src = 'img/pause.svg'
 
             }
 
-
+document.querySelector('.song-name').innerHTML=track;
         };
-//Formate Time
-function formatTime(seconds) {
-  if (isNaN(seconds)) return "0:00"; // handle NaN or invalid input
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
-}
+        //Formate Time
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "0:00"; // handle NaN or invalid input
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+        }
 
         console.log('Starting JS');
 
@@ -159,7 +161,6 @@ function formatTime(seconds) {
             let div = document.createElement('div');
             div.innerHTML = result;
             let as = div.getElementsByTagName('a')
-            let songs = [];
 
             for (let index = 0; index < as.length; index++) {
                 const e = as[index];
@@ -170,10 +171,17 @@ function formatTime(seconds) {
                 }
 
             }
+
+            return songs;
+        }
+        async function main() {
+            await fetchdata();
+            // playmusic("music/sidhu/"+songs[0]);
             // adding songs  
+            let songul = document.querySelector('.ull');
+            songul.innerHTML = "";
             for (const song of songs) {
-                let songul = document.querySelector('.ull');
-                songul.innerHTML = songul.innerHTML + `
+                songul.innerHTML += `
                   <li>
                     <div><img class="invert" src="img/play.svg" alt=""></div>
                     <div class="sname">${song}</div>
@@ -187,11 +195,9 @@ function formatTime(seconds) {
 
                 e.addEventListener('click', () => {
 
-                    playmusic("music/sidhu/" + e.querySelector('.sname').innerHTML);
+                    playmusic( e.querySelector('.sname').innerHTML);
 
-let value=e.querySelector('.sname').innerHTML;
-let songname=document.querySelector('.song-name');
-songname.innerHTML=value;
+                  
 
 
                 })
@@ -212,19 +218,28 @@ songname.innerHTML=value;
 
             // Working on song duration 
 
-            audio.addEventListener('timeupdate',()=> {
+            audio.addEventListener('timeupdate', () => {
 
                 // console.log(formatTime(audio.duration))
                 // console.log(formatTime(audio.currentTime))
-                document.querySelector('.duration').innerHTML=`${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
-              
+                document.querySelector('.duration').innerHTML = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+                document.querySelector('.circle').style.left = (audio.currentTime / audio.duration) * 100 + "%";
+
             });
 
-            
+            //Working On seekbar
+
+            document.querySelector('.line').addEventListener('click', (e) => {
+                let persent =(e.offsetX / e.target.getBoundingClientRect().width) * 100;
+                document.querySelector('.circle').style.left = persent + "%";
+                 audio.currentTime= (persent*audio.duration)/100  ;      
+
+                console.log();
+
+            })
 
         }
-
-        fetchdata();
+        main();
 
 
     </script>

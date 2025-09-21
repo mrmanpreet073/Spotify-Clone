@@ -184,8 +184,10 @@ async function main() {
   document.querySelector('.song-line').addEventListener('click', e => {
     // console.log(e.offsetX,e.target.getBoundingClientRect().width);
     persent = (e.offsetX / e.target.getBoundingClientRect().width) * 100;
+   
+
     document.querySelector('.circle').style.left = persent + "%";
-    currentsong.currentTime = (persent * currentsong.duration) / 100;
+    currentsong.currentTime = (persent * currentsong.duration) / 100; // (persentage /seconds)/100  Divide by 100 for converting to seconds
 
   })
 
